@@ -12,7 +12,7 @@ import (
 )
 
 const storage_path = "/root/.volrep"
-const layout = "2015-06-05T16:48:59.630135605Z"
+const layout = "2006-01-02 15:04:05"
 
 func CompressDataVolumes(container *docker.Container, volumes map[string]string) error {
 	// Check if the storage path exists.
@@ -37,12 +37,15 @@ func CompressDataVolumes(container *docker.Container, volumes map[string]string)
 
 	for key, value := range volumes {
 		// Convert current time into string
-		timeStr := time.Now().Format("2006-01-02 15:04:05")
+		// in timeStr we use "_"
+		timeStr := time.Now().Format(layout)
 		timeStr = strings.Replace(timeStr, "-", "_", -1)
 		timeStr = strings.Replace(timeStr, " ", "_", -1)
 		timeStr = strings.Replace(timeStr, ":", "_", -1)
 
-		containerVolumePathStr := strings.Replace(key, "/", "_", -1)
+		// unlike timeStr, here in containerVolumePathStr we use "-"
+		// it will be used in GetAllCompressedVolumes.
+		containerVolumePathStr := strings.Replace(key, "/", "-", -1)
 		archiveName := timeStr + containerVolumePathStr + ".tar"
 
 		destPathName := path.Join(storage_path, containerPath, archiveName)

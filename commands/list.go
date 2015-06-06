@@ -10,9 +10,8 @@ import (
 )
 
 func CmdList(c *cli.Context) {
-	isAll := c.Bool("all")
 
-	if isAll == false && len(c.Args()) != 1 {
+	if len(c.Args()) != 1 {
 		fmt.Println("Command `volrep load` needs exact 1 arguments. Please check again.")
 		os.Exit(1)
 	}
