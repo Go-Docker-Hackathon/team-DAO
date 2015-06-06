@@ -35,7 +35,7 @@ func CmdList(c *cli.Context) {
 		fmt.Println("Error when getting all compressed volumes.", allCompressedVolumes)
 		os.Exit(1)
 	}
-	fmt.Println("Container " + source + "has " + strconv.Itoa(len(allCompressedVolumes)) + "compressed data volumes")
+	fmt.Println("Container <" + source + "> has " + strconv.Itoa(len(allCompressedVolumes)) + "compressed data volumes.")
 
 	i := 1
 	for _, value := range allCompressedVolumes {
@@ -46,11 +46,10 @@ func CmdList(c *cli.Context) {
 		}
 		timeStr := value[0][:index]
 
-		fmt.Println(strconv.Itoa(i) + strings.Replace(timeStr[:10], "_", "-", -1) + strings.Replace(timeStr[12:], "_", ":", -1))
+		fmt.Println(strconv.Itoa(i) + ". " + strings.Replace(timeStr[:10], "_", "-", -1) + " " + strings.Replace(timeStr[12:], "_", ":", -1))
 		for _, item := range value {
 			fmt.Println("   " + item)
 		}
-
+		i++
 	}
-
 }
