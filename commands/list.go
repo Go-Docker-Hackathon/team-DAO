@@ -3,6 +3,8 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
 	//"../utils"
 
@@ -18,7 +20,7 @@ func CmdList(c *cli.Context) {
 
 	source := c.Args()[0]
 
-	fmt.Println("The source container is " + source)
+	fmt.Println("The source container is " + source + ".")
 
 	sourceCon, err := GetContainer(source)
 	if err != nil {
@@ -32,6 +34,23 @@ func CmdList(c *cli.Context) {
 	if err != nil {
 		fmt.Println("Error when getting all compressed volumes.", allCompressedVolumes)
 		os.Exit(1)
+	}
+	fmt.Println("Container " + source + "has " + strconv.Itoa(len(allCompressedVolumes)) + "compressed data volumes")
+
+	i := 1
+	for _, value := range allCompressedVolumes {
+		index := strings.Index(value[0], "-")
+		if index == -1 {
+			fmt.Println("Got an error when get index of '-' in compressed file name.")
+			continue
+		}
+		timeStr := value[0][:index]
+
+		fmt.Println(strconv.Itoa(i) + strings.Replace(timeStr[:10], "_", "-", -1) + strings.Replace(timeStr[12:], "_", ":", -1))
+		for _, item := range value {
+			fmt.Println("   " + item)
+		}
+
 	}
 
 }
