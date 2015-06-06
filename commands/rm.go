@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"../utils"
 
@@ -34,7 +35,17 @@ func CmdRm(c *cli.Context) {
 		os.Exit(1)
 	}
 
+	var i int = 1
+	for key, value := range allCompressedVolumes {
+		fmt.Println(strconv.Itoa(i) + ":" + key)
+		for _, item := range value {
+			fmt.Println("    " + item)
+		}
+		i++
+	}
+
 	var index int
+
 	if isAll == true {
 		index = -1
 	} else {
@@ -44,6 +55,8 @@ func CmdRm(c *cli.Context) {
 			os.Exit(1)
 		}
 	}
+
+	fmt.Println("Prepare to rm the specified compressed data volumes.")
 
 	err = utils.RemoveCompressedVolumes(sourceCon.ID, index-1)
 	if err != nil {
