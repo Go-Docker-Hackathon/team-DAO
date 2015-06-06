@@ -45,7 +45,7 @@ func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string,
 			os.Exit(1)
 		}
 		return nil
-	} else {
+	} else if index >= 1 && index <= len(timeStrArray) {
 		containerPath := path.Join(storage_path, containerFileName)
 		files, err := ioutil.ReadDir(containerPath)
 		if err != nil {
@@ -64,6 +64,9 @@ func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string,
 			}
 		}
 		return nil
+	} else {
+		fmt.Println("Invalid input index.")
+		os.Exit(1)
 	}
 
 	return nil

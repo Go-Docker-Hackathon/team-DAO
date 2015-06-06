@@ -60,11 +60,6 @@ func CmdRm(c *cli.Context) {
 
 	fmt.Println("Prepare to rm the specified compressed data volumes.")
 
-	if index == i {
-		fmt.Println("You hope to remove all compressed date volumes.")
-		index = -1
-	}
-
 	fmt.Println("timeStrArray: ", timeStrArray)
 	err = utils.RemoveCompressedVolumes(sourceCon, timeStrArray, index-1)
 	if err != nil {
