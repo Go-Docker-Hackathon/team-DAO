@@ -79,6 +79,7 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
 	containerFileName := containerIdStr + containerNameStr
 	fmt.Println("volumes:", volumes)
+	fmt.Println("target Volumes:", targetDataVolumes)
 	for _, volumeFilename := range volumes {
 		// here volumeFilename is something like this :
 		// 2015_06_05_22_41_08-var-lib-mysql.tar
