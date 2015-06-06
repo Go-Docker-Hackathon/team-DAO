@@ -40,7 +40,7 @@ func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string,
 		// if we need to remove all
 		// the index user input is len(timeStrArray)+1
 		fmt.Println(path.Join(storage_path, containerFileName))
-		err := os.Remove(path.Join(storage_path, containerFileName))
+		err := os.RemoveAll(path.Join(storage_path, containerFileName))
 		if err != nil {
 			fmt.Println("Failed to remove the container directory.")
 			os.Exit(1)
