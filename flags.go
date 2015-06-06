@@ -11,8 +11,8 @@ var (
 		Usage: "It is the root path of docker.",
 	}
 	flRemoveAll = cli.BoolFlag{
-		Name:  "all",
-		Value: false,
+		Name: "all",
+		//Value: false,
 		Usage: "It represents wether to remove all compressed packages.",
 	}
 )

@@ -10,19 +10,6 @@ import (
 	"github.com/codegangsta/cli"
 )
 
-var (
-	flDockerRoot = cli.StringFlag{
-		Name:  "dockerdir",
-		Value: "/var/lib/docker",
-		Usage: "It is the root path of docker.",
-	}
-	flRemoveAll = cli.BoolFlag{
-		Name:  "all",
-		Value: false,
-		Usage: "It represents wether to remove all compressed packages.",
-	}
-)
-
 func main() {
 	arg_num := len(os.Args)
 
@@ -35,44 +22,44 @@ func main() {
 	app := cli.NewApp()
 	app.Name = path.Base(os.Args[0])
 	app.Author = "Allen Sun"
-	app.Email = "allen.sun@daocloud.io"
+	app.Email = " allen.sun@daocloud.io "
 
 	app.Commands = []cli.Command{
 		{
 			Name:        "dup",
-			Usage:       "Duplicate a container's data volumes to another container.",
+			Usage:       "Duplicate a container's data volumes to another one.",
 			Description: "FORMAT : volrep dup srcCon destCon.",
 			Flags: []cli.Flag{
 				flDockerRoot,
 			},
-			Action: cmdDup,
+			Action: commands.CmdDup,
 		},
 		{
 			Name:        "save",
-			Usage:       "save a container's data volumes as compressed volumes.",
-			Description: "The save command is used like this, volrep save containerA.",
-			Action:      cmdSave,
+			Usage:       "Save a container's data volumes as compressed volumes.",
+			Description: "FORMAT: volrep save containerA.",
+			Action:      commands.CmdSave,
 		},
 		{
 			Name:        "load",
-			Usage:       "load a container's data volumes as compressed volumes.",
+			Usage:       "Load a container's data volumes as compressed volumes.",
 			Description: "FORMAT: volrep load srcCon destCon.",
-			Action:      cmdLoad,
+			Action:      commands.CmdLoad,
 		},
 		{
 			Name:        "list",
-			Usage:       "list a container's all compressed volume.",
+			Usage:       "List a container's all compressed volume.",
 			Description: "FORMAT: volrep list srcCon.",
-			Action:      cmdList,
+			Action:      commands.CmdList,
 		},
 		{
 			Name:        "rm",
-			Usage:       "rm a container's compressed volume.",
+			Usage:       "Remove a container's compressed volume.",
 			Description: "FORMAT: volrep rm srcCon.",
 			Flags: []cli.Flag{
-				flAll,
+				flRemoveAll,
 			},
-			Action: cmdRm,
+			Action: commands.CmdRm,
 		},
 	}
 
