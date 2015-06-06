@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/fsouza/go-dockerclient"
+	"io/ioutil"
 	"os"
 	"path"
 	"strings"
@@ -34,13 +35,35 @@ func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string,
 	containerIdStr := container.ID
 	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
 	containerFileName := containerIdStr + containerNameStr
-	if index == -1 {
+	if index == len(timeStrArray)+1 {
+		// if we need to remove all
+		// the index user input is len(timeStrArray)+1
 		fmt.Println(path.Join(storage_path, containerFileName))
 		err := os.Remove(path.Join(storage_path, containerFileName))
 		if err != nil {
 			fmt.Println("Failed to remove the container directory.")
 			os.Exit(1)
 		}
+		return nil
+	} else {
+		containerPath := path.Join(storage_path, containerFileName)
+		files, err := ioutil.ReadDir(containerPath)
+		if err != nil {
+			fmt.Println("Error when get all dirs in container path.")
+			os.Exit(1)
+		}
+
+		for _, file := range files {
+			if strings.HasPrefix(file.Name(), timeStrArray[index-1]) {
+				fmt.Println("This is a corresponding compressed data volume. Remove it.")
+				err := os.Remove(path.Join(storage_path, containerFileName, file.Name()))
+				if err != nil {
+					fmt.Println("Error in removing one specified compressed data volume.")
+					os.Exit(1)
+				}
+			}
+		}
+		return nil
 	}
 
 	return nil
