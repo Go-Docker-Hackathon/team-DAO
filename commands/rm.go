@@ -61,7 +61,7 @@ func CmdRm(c *cli.Context) {
 	fmt.Println("Prepare to rm the specified compressed data volumes.")
 
 	fmt.Println("timeStrArray: ", timeStrArray)
-	err = utils.RemoveCompressedVolumes(sourceCon, timeStrArray, index-1)
+	err = utils.RemoveCompressedVolumes(sourceCon, timeStrArray, index)
 	if err != nil {
 		fmt.Println("Something happened when removing compressed volumes, error:", err)
 		os.Exit(1)
