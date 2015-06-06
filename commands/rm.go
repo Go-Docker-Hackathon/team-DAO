@@ -51,16 +51,16 @@ func CmdRm(c *cli.Context) {
 	fmt.Println(strconv.Itoa(i) + ": remove all.")
 
 	var index int
-	fmt.Println("Please choose which one to remove:")
+	fmt.Print("Please choose which one to remove: ")
 	index = utils.AskForNumberPick(i)
 	if index == -1 {
 		fmt.Println("Invalid picked number!  Please check it again.")
 		os.Exit(1)
 	}
 
-	fmt.Println("Prepare to rm the specified compressed data volumes.")
+	//fmt.Println("Prepare to rm the specified compressed data volumes.")
 
-	fmt.Println("timeStrArray: ", timeStrArray)
+	//fmt.Println("timeStrArray: ", timeStrArray)
 	err = utils.RemoveCompressedVolumes(sourceCon, timeStrArray, index)
 	if err != nil {
 		fmt.Println("Something happened when removing compressed volumes, error:", err)
