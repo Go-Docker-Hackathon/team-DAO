@@ -89,6 +89,11 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 		first := strings.Index(volumeFilename, "-")
 		last := strings.LastIndex(volumeFilename, ".")
 		volumePath := volumeFilename[first:last]
+		// we need to retransfer the "-" to "/"
+		// because in key in tagertDataVolumes is like "/var/lib/docker"
+		volumePath := strings.Replace(volumePath, "-", "/", -1)
+
+		fmt.Println("volumePath: " + volumePath)
 
 		for key, value := range targetDataVolumes {
 			if volumePath == key {
