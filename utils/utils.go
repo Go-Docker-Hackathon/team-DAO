@@ -78,6 +78,7 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 	containerIdStr := container.ID
 	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
 	containerFileName := containerIdStr + containerNameStr
+	fmt.Println("volumes:", volumes)
 	for _, volumeFilename := range volumes {
 		// here volumeFilename is something like this :
 		// 2015_06_05_22_41_08-var-lib-mysql.tar
@@ -94,9 +95,18 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 				// actual data volume path of target container
 				// 1.delete data volume of target contaier.
 				// 2.untar compressed data volume to actual data volume path of container
+				fmt.Println("Remove the path of " + value)
+				// it will remove everything including the file name
+				// So we need to mkdir value first when executing `tar -xf `
 				err := os.RemoveAll(value)
 				if err != nil {
 					fmt.Println("Failed to remove all details in data volumes.")
+					os.Exit(1)
+				}
+
+				err = os.MkdirAll(value, 744)
+				if err != nil {
+					fmt.Println("Failed to mkdir -p " + value)
 					os.Exit(1)
 				}
 
