@@ -50,8 +50,8 @@ func CompressDataVolumes(container *docker.Container, volumes map[string]string)
 
 		destPathName := path.Join(storage_path, containerPath, archiveName)
 
-		fmt.Println(archiveName)
-		fmt.Println(destPathName)
+		//fmt.Println(archiveName)
+		//fmt.Println(destPathName)
 
 		// Enter volume path and compress all thing into ~/.volrep
 		// whether to mkdir -p first?

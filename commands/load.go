@@ -28,7 +28,7 @@ func CmdLoad(c *cli.Context) {
 		os.Exit(1)
 	}
 
-	fmt.Println("The target container is " + target)
+	fmt.Println("\nThe target container is " + target)
 	targetCon, err := GetContainer(target)
 	if err != nil {
 		fmt.Println("Can not get docker container corresponding the name you provided.")
@@ -47,7 +47,7 @@ func CmdLoad(c *cli.Context) {
 	// As the source and target containers use the same image.
 	// There is no need to check the target container's data volume.
 	// But getting the data volumes is necessary.
-	sourceDataVolumes, err := GetContainerDataVolumes(sourceCon)
+	_, err = GetContainerDataVolumes(sourceCon)
 	if err != nil {
 		fmt.Println("The source container has no data volume!\n Aborting!")
 		os.Exit(1)
@@ -59,15 +59,15 @@ func CmdLoad(c *cli.Context) {
 		os.Exit(1)
 	}
 
-	fmt.Println(sourceDataVolumes)
-	fmt.Println(targetDataVolumes)
+	//fmt.Println(sourceDataVolumes)
+	//fmt.Println(targetDataVolumes)
 
 	// If their images have same repo name and same tag name.
 	// Check the state of source container.
 	sourceState := sourceCon.State.Running
 	if sourceState == true {
 		fmt.Println("The source container is running and data volumes duplication will stop the running source container.")
-		fmt.Println("\nAttention: Stop the source container <" + sourceCon.Name + "> ? (yes/no) ")
+		fmt.Print("Attention: Stop the source container <" + sourceCon.Name + "> ? (yes/no) ")
 
 		// Ask for user's confirmation of stopping running container.
 		isConfirmed := utils.AskForConfirmation()
@@ -84,9 +84,10 @@ func CmdLoad(c *cli.Context) {
 		}
 	}
 
-	fmt.Println("\nThe source container " + sourceCon.Name + "has volumes.")
-
 	allCompressedVolumes, err := GetAllCompressedVolumes(sourceCon)
+
+	//fmt.Println("The source container <" + sourceCon.Name + "> has " + strconv.Itoa(len(allCompressedVolumes)) + " volumes.")
+
 	if err != nil {
 		fmt.Println("Error when getting all compressed volumes.")
 		os.Exit(1)
@@ -107,7 +108,7 @@ func CmdLoad(c *cli.Context) {
 		i++
 	}
 
-	fmt.Println("Please choose which one to load:")
+	fmt.Print("Please choose which one to load: ")
 
 	pickedNum := utils.AskForNumberPick(i - 1)
 	if pickedNum == -1 {
@@ -116,12 +117,12 @@ func CmdLoad(c *cli.Context) {
 	}
 
 	sourceDataVolumesArray := allCompressedVolumes[timeStrArray[pickedNum-1]]
-	fmt.Println(sourceDataVolumesArray)
+	//fmt.Println(sourceDataVolumesArray)
 
 	targetState := targetCon.State.Running
 	if targetState == true {
 		fmt.Println("The target container is running and data volumes duplication will stop the running source container.")
-		fmt.Println("\nAttention: Stop the target container <" + targetCon.Name + "> ? (yes/no) ")
+		fmt.Print("Attention: Stop the target container <" + targetCon.Name + "> ? (yes/no) ")
 
 		// Ask for user's confirmation of stopping running container.
 		isConfirmed := utils.AskForConfirmation()
@@ -132,34 +133,42 @@ func CmdLoad(c *cli.Context) {
 
 		// Container is running, there are two policies: stop or pause container.
 		// 1.Try to stop container.
+		fmt.Print("Confirmed. \n1.Stop container...   ")
+
 		if err := StopContainer(targetCon.ID, 10); err != nil {
 			fmt.Println("Got an error when stopping a running container. Error is %s", err)
 			os.Exit(1)
 		}
+		fmt.Println("OK")
 	}
 
 	// Start to duplicate the specific volumes from source to target.
+	fmt.Println("2.Start to load data volumes from source container...   ")
 	err = utils.LoadVolumesForTargetContainer(sourceCon, sourceDataVolumesArray, targetDataVolumes)
 	if err != nil {
 		fmt.Println("Failed to load compressed data volumes for target containers.")
 		os.Exit(1)
 	} else {
 		fmt.Println("Loading compressed data volumes finished successfully.")
-		fmt.Println("Start source container and target container.")
+		fmt.Println("OK")
+		//fmt.Println("Start source container and target container.")
 	}
 
+	fmt.Print("3.Start source container...   ")
 	err = StartContainer(sourceCon.ID)
 	if err != nil {
 		fmt.Println("Fail to start the source container.")
 		os.Exit(1)
 	}
+	fmt.Println("OK")
 
+	fmt.Print("4.Start target container...   ")
 	err = StartContainer(targetCon.ID)
 	if err != nil {
 		fmt.Println("Fail to start the target container.")
 		os.Exit(1)
 	}
+	fmt.Println("OK")
 
 	fmt.Println("Well Done!")
-
 }

@@ -43,15 +43,15 @@ func GetContainer(name string) (*docker.Container, error) {
 
 	containerID := container.ID
 	containerImage := container.Config.Image
-	containerVolume := container.Volumes
+	//containerVolume := container.Volumes
 	containerName := container.Name
 
 	fmt.Println("Below is container's details.")
 	fmt.Println("Container ID :      " + containerID)
 	fmt.Println("Container Name :    " + containerName)
 	fmt.Println("Container Image :   " + containerImage)
-	fmt.Print("Container Volumes : ")
-	fmt.Println(containerVolume)
+	//fmt.Print("Container Volumes : ")
+	//fmt.Println(containerVolume)
 
 	return container, nil
 }
@@ -93,7 +93,7 @@ func GetAllCompressedVolumes(sourceCon *docker.Container) (map[string][]string, 
 	// constrcut container's absolute path
 	CompressedVolumesPath := path.Join(storage_path, containerPath)
 
-	fmt.Println("Container compressed path: " + CompressedVolumesPath)
+	//fmt.Println("Container compressed path: " + CompressedVolumesPath)
 
 	files, err := ioutil.ReadDir(CompressedVolumesPath)
 	if err != nil {
@@ -110,7 +110,7 @@ func GetAllCompressedVolumes(sourceCon *docker.Container) (map[string][]string, 
 			continue
 		}
 		timeStr := fileNameStr[:index]
-		fmt.Println("TimeStr is: ", timeStr)
+		//fmt.Println("TimeStr is: ", timeStr)
 		// It seems code below does not work.
 		// slice append?
 		allCompressedVolumes[timeStr] = append(allCompressedVolumes[timeStr], fileNameStr)
