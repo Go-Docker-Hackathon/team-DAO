@@ -2,6 +2,10 @@ package utils
 
 import (
 	"fmt"
+	"github.com/fsouza/go-dockerclient"
+	"os"
+	"path"
+	"strings"
 )
 
 // FIXME
@@ -26,6 +30,18 @@ func DuplicateDataVolumes(sVols map[string]string, tVols map[string]string) erro
 	return nil
 }
 
-func RemoveCompressedVolumes(id string, index int) error {
+func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string, index int) error {
+	containerIdStr := container.ID
+	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
+	containerFileName := containerIdStr + containerNameStr
+	if index == -1 {
+		fmt.Println(path.Join(storage_path, containerFileName))
+		err := os.Remove(path.Join(storage_path, containerFileName))
+		if err != nil {
+			fmt.Println("Failed to remove the container directory.")
+			os.Exit(1)
+		}
+	}
+
 	return nil
 }

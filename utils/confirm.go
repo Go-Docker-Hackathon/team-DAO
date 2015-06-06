@@ -38,7 +38,7 @@ func AskForNumberPick(input int) int {
 	}
 	//okayResponses := []int{"y", "Y", "yes", "Yes", "YES"}
 	//nokayResponses := []string{"n", "N", "no", "No", "NO"}
-	if response < input && response >= 1 {
+	if response <= input && response >= 1 {
 		return response
 	} else {
 		return -1

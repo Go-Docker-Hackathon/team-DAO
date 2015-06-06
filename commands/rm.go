@@ -35,30 +35,38 @@ func CmdRm(c *cli.Context) {
 		os.Exit(1)
 	}
 
+	fmt.Println("Please choose which one to remove:")
+
+	timeStrArray := []string{}
 	var i int = 1
 	for key, value := range allCompressedVolumes {
 		fmt.Println(strconv.Itoa(i) + ":" + key)
+		timeStrArray = append(timeStrArray, key)
 		for _, item := range value {
 			fmt.Println("    " + item)
 		}
 		i++
 	}
 
-	var index int
+	fmt.Println(strconv.Itoa(i) + ": remove all.")
 
-	if isAll == true {
-		index = -1
-	} else {
-		index = utils.AskForNumberPick(len(allCompressedVolumes))
-		if index == -1 {
-			fmt.Println("The number you pick is invalid, please check it again.")
-			os.Exit(1)
-		}
+	var index int
+	fmt.Println("Please choose which one to remove:")
+	index = utils.AskForNumberPick(i)
+	if index == -1 {
+		fmt.Println("Invalid picked number!  Please check it again.")
+		os.Exit(1)
 	}
 
 	fmt.Println("Prepare to rm the specified compressed data volumes.")
 
-	err = utils.RemoveCompressedVolumes(sourceCon.ID, index-1)
+	if index == i {
+		fmt.Println("You hope to remove all compressed date volumes.")
+		index = -1
+	}
+
+	fmt.Println("timeStrArray: ", timeStrArray)
+	err = utils.RemoveCompressedVolumes(sourceCon, timeStrArray, index-1)
 	if err != nil {
 		fmt.Println("Something happened when removing compressed volumes, error:", err)
 		os.Exit(1)
