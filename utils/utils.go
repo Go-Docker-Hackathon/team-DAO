@@ -81,6 +81,7 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 	fmt.Println("volumes:", volumes)
 	fmt.Println("target Volumes:", targetDataVolumes)
 	for _, volumeFilename := range volumes {
+		fmt.Println("VolumeFilename:", volumeFilename)
 		// here volumeFilename is something like this :
 		// 2015_06_05_22_41_08-var-lib-mysql.tar
 		// we first get the first "-" and "."
@@ -89,13 +90,12 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 		first := strings.Index(volumeFilename, "-")
 		last := strings.LastIndex(volumeFilename, ".")
 		volumePath := volumeFilename[first:last]
-		// we need to retransfer the "-" to "/"
-		// because in key in tagertDataVolumes is like "/var/lib/docker"
 		volumePath := strings.Replace(volumePath, "-", "/", -1)
 
 		fmt.Println("volumePath: " + volumePath)
 
 		for key, value := range targetDataVolumes {
+			fmt.Println("key:", key, "volumePath:", volumePath)
 			if volumePath == key {
 				// We got the matched compressed data volume and
 				// actual data volume path of target container
