@@ -78,10 +78,11 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 	containerIdStr := container.ID
 	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
 	containerFileName := containerIdStr + containerNameStr
-	fmt.Println("volumes:", volumes)
-	fmt.Println("target Volumes:", targetDataVolumes)
+	//fmt.Println("volumes:", volumes)
+	//fmt.Println("target Volumes:", targetDataVolumes)
 	for _, volumeFilename := range volumes {
-		fmt.Println("VolumeFilename:", volumeFilename)
+		//fmt.Println("VolumeFilename:", volumeFilename)
+
 		// here volumeFilename is something like this :
 		// 2015_06_05_22_41_08-var-lib-mysql.tar
 		// we first get the first "-" and "."
@@ -92,16 +93,17 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 		volumePath := volumeFilename[first:last]
 		volumePath = strings.Replace(volumePath, "-", "/", -1)
 
-		fmt.Println("volumePath: " + volumePath)
+		//fmt.Println("volumePath: " + volumePath)
 
 		for key, value := range targetDataVolumes {
-			fmt.Println("key:", key, "volumePath:", volumePath)
+			//fmt.Println("key:", key, "volumePath:", volumePath)
 			if volumePath == key {
 				// We got the matched compressed data volume and
 				// actual data volume path of target container
 				// 1.delete data volume of target contaier.
 				// 2.untar compressed data volume to actual data volume path of container
-				fmt.Println("Remove the path of " + value)
+
+				//fmt.Println("Remove the path of " + value)
 				// it will remove everything including the file name
 				// So we need to mkdir value first when executing `tar -xf `
 				err := os.RemoveAll(value)
@@ -119,7 +121,7 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 				dataVolumeAbsPath := path.Join(storage_path, containerFileName, volumeFilename)
 				cmd := "cd " + value + "&& tar -xf " + dataVolumeAbsPath
 
-				fmt.Println("cmd is: " + cmd)
+				//fmt.Println("cmd is: " + cmd)
 
 				_, err = ExecShell(cmd)
 

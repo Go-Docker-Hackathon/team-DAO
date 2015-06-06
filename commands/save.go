@@ -56,7 +56,8 @@ func CmdSave(c *cli.Context) {
 
 		// Container is running, there are two policies: stop or pause container.
 		// 1.Try to stop container.
-		fmt.Print("Confirmed. \n 1.Stop container...   ")
+		fmt.Println("Confirmed.")
+		fmt.Print("1.Stop container...   ")
 		if err := StopContainer(tarCon.ID, 10); err != nil {
 			fmt.Println("Got an error when stopping a running container. Error is %s", err)
 			os.Exit(1)
