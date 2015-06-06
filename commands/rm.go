@@ -40,10 +40,10 @@ func CmdRm(c *cli.Context) {
 	timeStrArray := []string{}
 	var i int = 1
 	for key, value := range allCompressedVolumes {
-		fmt.Println(strconv.Itoa(i) + ":" + key)
+		fmt.Println(strconv.Itoa(i) + ".Replicate Time: " + key)
 		timeStrArray = append(timeStrArray, key)
 		for _, item := range value {
-			fmt.Println("    " + item)
+			fmt.Println("    Compressed file name: " + item)
 		}
 		i++
 	}

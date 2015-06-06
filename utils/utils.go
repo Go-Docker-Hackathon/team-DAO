@@ -72,3 +72,48 @@ func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string,
 
 	return nil
 }
+
+func LoadVolumesForTargetContainer(container *docker.Container, volumes []string, targetDataVolumes map[string]string) error {
+
+	containerIdStr := container.ID
+	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
+	containerFileName := containerIdStr + containerNameStr
+	for _, volumeFilename := range volumes {
+		// here volumeFilename is something like this :
+		// 2015_06_05_22_41_08-var-lib-mysql.tar
+		// we first get the first "-" and "."
+		// Then replace "-" with "/".
+		// result is volume view of container itself.
+		first := strings.Index(volumeFilename, "-")
+		last := strings.LastIndex(volumeFilename, ".")
+		volumePath := volumeFilename[first:last]
+
+		for key, value := range targetDataVolumes {
+			if volumePath == key {
+				// We got the matched compressed data volume and
+				// actual data volume path of target container
+				// 1.delete data volume of target contaier.
+				// 2.untar compressed data volume to actual data volume path of container
+				err := os.RemoveAll(value)
+				if err != nil {
+					fmt.Println("Failed to remove all details in data volumes.")
+					os.Exit(1)
+				}
+
+				dataVolumeAbsPath := path.Join(storage_path, containerFileName, volumeFilename)
+				cmd := "cd " + value + "&& tar -xf " + dataVolumeAbsPath
+
+				fmt.Println("cmd is: " + cmd)
+
+				_, err = ExecShell(cmd)
+
+				if err != nil {
+					fmt.Println("Command tar ran into an Error.")
+					return err
+				}
+			}
+		}
+	}
+
+	return nil
+}
