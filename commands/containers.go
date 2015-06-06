@@ -87,13 +87,13 @@ func GetAllCompressedVolumes(sourceCon *docker.Container) (map[string][]string, 
 	allCompressedVolumes := map[string][]string{}
 
 	// If we use go-dockerclient, container.Name will be like "/iamcontainername"
-	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
+	containerNameStr := strings.Replace(sourceCon.Name, "/", "_", -1)
 	// Combine ID and Name together to identify
-	containerPath := container.ID + containerNameStr
+	containerPath := sourceCon.ID + containerNameStr
 	// constrcut container's absolute path
 	CompressedVolumesPath := path.Join(storage_path, containerPath)
 
-	fmt.Println("Container compressed path: "CompressedVolumesPath)
+	fmt.Println("Container compressed path: " + CompressedVolumesPath)
 
 	files, err := ioutil.ReadDir(CompressedVolumesPath)
 	if err != nil {
