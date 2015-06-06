@@ -90,7 +90,7 @@ func LoadVolumesForTargetContainer(container *docker.Container, volumes []string
 		first := strings.Index(volumeFilename, "-")
 		last := strings.LastIndex(volumeFilename, ".")
 		volumePath := volumeFilename[first:last]
-		volumePath := strings.Replace(volumePath, "-", "/", -1)
+		volumePath = strings.Replace(volumePath, "-", "/", -1)
 
 		fmt.Println("volumePath: " + volumePath)
 
