@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path"
 	"strings"
-	//"time"
+	"time"
 
 	"github.com/fsouza/go-dockerclient"
 )
@@ -22,9 +22,9 @@ func CompressDataVolumes(container *docker.Container, volumes map[string]string)
 	}
 
 	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
-	containerPath := container.ID + "_" + containerNameStr
+	containerPath := container.ID + containerNameStr
 
-	if err := os.Stat(path.Join(storage_path, containerPath)); err != nil {
+	if _, err := os.Stat(path.Join(storage_path, containerPath)); err != nil {
 		fmt.Println(path.Join(storage_path, containerPath) + " does not exist yet.")
 		fmt.Println("Try to make this directory ...")
 
@@ -36,11 +36,16 @@ func CompressDataVolumes(container *docker.Container, volumes map[string]string)
 	}
 
 	for key, value := range volumes {
-		timeStr := "2015" //string(time.Now().UTC().Format(layout))
+		// Convert current time into string
+		timeStr := time.Now().Format("2006-01-02 15:04:05")
+		timeStr = strings.Replace(timeStr, "-", "_", -1)
+		timeStr = strings.Replace(timeStr, " ", "_", -1)
+		timeStr = strings.Replace(timeStr, ":", "_", -1)
+
 		containerVolumePathStr := strings.Replace(key, "/", "_", -1)
 		archiveName := timeStr + containerVolumePathStr + ".tar"
 
-		destPathName := path.Join(storage_path, container.ID+"_"+containerNameStr, archiveName)
+		destPathName := path.Join(storage_path, containerPath, archiveName)
 
 		fmt.Println(archiveName)
 		fmt.Println(destPathName)
