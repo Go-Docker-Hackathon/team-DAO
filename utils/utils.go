@@ -35,7 +35,7 @@ func RemoveCompressedVolumes(container *docker.Container, timeStrArray []string,
 	containerIdStr := container.ID
 	containerNameStr := strings.Replace(container.Name, "/", "_", -1)
 	containerFileName := containerIdStr + containerNameStr
-	fmt.Println("Parameters: ", index, len(timeStrArray))
+	//fmt.Println("Parameters: ", index, len(timeStrArray))
 	if index == len(timeStrArray)+1 {
 		// if we need to remove all
 		// the index user input is len(timeStrArray)+1

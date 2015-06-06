@@ -143,16 +143,16 @@ func CmdLoad(c *cli.Context) {
 	}
 
 	// Start to duplicate the specific volumes from source to target.
-	fmt.Print("2.Start to load data volumes from source container...   ")
+	fmt.Println("2.Start to load data volumes from source container...   ")
 	err = utils.LoadVolumesForTargetContainer(sourceCon, sourceDataVolumesArray, targetDataVolumes)
 	if err != nil {
 		fmt.Println("Failed to load compressed data volumes for target containers.")
 		os.Exit(1)
 	} else {
 		fmt.Println("Loading compressed data volumes finished successfully.")
-		fmt.Println("Start source container and target container.")
+		fmt.Println("OK")
+		//fmt.Println("Start source container and target container.")
 	}
-	fmt.Println("OK")
 
 	fmt.Print("3.Start source container...   ")
 	err = StartContainer(sourceCon.ID)
