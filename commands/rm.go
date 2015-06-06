@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"../utils"
 
@@ -34,18 +35,33 @@ func CmdRm(c *cli.Context) {
 		os.Exit(1)
 	}
 
-	var index int
-	if isAll == true {
-		index = -1
-	} else {
-		index = utils.AskForNumberPick(len(allCompressedVolumes))
-		if index == -1 {
-			fmt.Println("The number you pick is invalid, please check it again.")
-			os.Exit(1)
+	fmt.Println("Please choose which one to remove:")
+
+	timeStrArray := []string{}
+	var i int = 1
+	for key, value := range allCompressedVolumes {
+		fmt.Println(strconv.Itoa(i) + ".Replicate Time: " + key)
+		timeStrArray = append(timeStrArray, key)
+		for _, item := range value {
+			fmt.Println("    Compressed file name: " + item)
 		}
+		i++
 	}
 
-	err = utils.RemoveCompressedVolumes(sourceCon.ID, index-1)
+	fmt.Println(strconv.Itoa(i) + ": remove all.")
+
+	var index int
+	fmt.Println("Please choose which one to remove:")
+	index = utils.AskForNumberPick(i)
+	if index == -1 {
+		fmt.Println("Invalid picked number!  Please check it again.")
+		os.Exit(1)
+	}
+
+	fmt.Println("Prepare to rm the specified compressed data volumes.")
+
+	fmt.Println("timeStrArray: ", timeStrArray)
+	err = utils.RemoveCompressedVolumes(sourceCon, timeStrArray, index)
 	if err != nil {
 		fmt.Println("Something happened when removing compressed volumes, error:", err)
 		os.Exit(1)

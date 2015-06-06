@@ -19,6 +19,8 @@ var Endpoint = "unix:///var/run/docker.sock"
 // FIXME: make it compiltile with all kinds of situations wherever the root dir path is.
 var VolumePath = "/var/lib/docker/vfs/dir"
 
+const storage_path = "/root/.volrep"
+
 func GetContainer(name string) (*docker.Container, error) {
 	// 1.check the source container:
 	//   1.1 whether source is legal.
@@ -83,7 +85,16 @@ func GetContainerDataVolumes(sourceCon *docker.Container) (map[string]string, er
 
 func GetAllCompressedVolumes(sourceCon *docker.Container) (map[string][]string, error) {
 	allCompressedVolumes := map[string][]string{}
-	CompressedVolumesPath := path.Join("/root/.volrep", sourceCon.ID+"_"+sourceCon.Name)
+
+	// If we use go-dockerclient, container.Name will be like "/iamcontainername"
+	containerNameStr := strings.Replace(sourceCon.Name, "/", "_", -1)
+	// Combine ID and Name together to identify
+	containerPath := sourceCon.ID + containerNameStr
+	// constrcut container's absolute path
+	CompressedVolumesPath := path.Join(storage_path, containerPath)
+
+	fmt.Println("Container compressed path: " + CompressedVolumesPath)
+
 	files, err := ioutil.ReadDir(CompressedVolumesPath)
 	if err != nil {
 		fmt.Println("Error when reading dirs in " + CompressedVolumesPath)
@@ -92,6 +103,7 @@ func GetAllCompressedVolumes(sourceCon *docker.Container) (map[string][]string, 
 
 	for _, file := range files {
 		fileNameStr := file.Name()
+		// Only in containerVolumePathStr of compress.go, we use "-"
 		index := strings.Index(fileNameStr, "-")
 		if index == -1 {
 			fmt.Println("Got an error when get index of '-' in compressed file name.")

@@ -42,7 +42,7 @@ func main() {
 		},
 		{
 			Name:        "load",
-			Usage:       "Load a container's data volumes as compressed volumes.",
+			Usage:       "Load a container's data volumes from sepcified container's compressed volumes.",
 			Description: "FORMAT: volrep load srcCon destCon.",
 			Action:      commands.CmdLoad,
 		},

@@ -85,6 +85,7 @@ func CmdLoad(c *cli.Context) {
 	}
 
 	fmt.Println("\nThe source container " + sourceCon.Name + "has volumes.")
+
 	allCompressedVolumes, err := GetAllCompressedVolumes(sourceCon)
 	if err != nil {
 		fmt.Println("Error when getting all compressed volumes.")
@@ -92,25 +93,29 @@ func CmdLoad(c *cli.Context) {
 	}
 
 	VolumesNum := len(allCompressedVolumes)
-	indexToKeyMap := []string{}
-	i := 1
+
 	fmt.Println("Here is " + strconv.Itoa(VolumesNum) + " replicated volumes, like below:")
+
+	timeStrArray := []string{}
+	var i int = 1
 	for key, value := range allCompressedVolumes {
 		fmt.Println(strconv.Itoa(i) + ".Replicate Time: " + key)
+		timeStrArray = append(timeStrArray, key)
 		for _, item := range value {
-			fmt.Println("  Compressed file name: " + item)
+			fmt.Println("    Compressed file name: " + item)
 		}
 		i++
-		indexToKeyMap = append(indexToKeyMap, key)
 	}
 
-	pickedNum := utils.AskForNumberPick(i)
+	fmt.Println("Please choose which one to load:")
+
+	pickedNum := utils.AskForNumberPick(i - 1)
 	if pickedNum == -1 {
-		fmt.Println("Wrong index input")
+		fmt.Println("Invalid input index.")
 		os.Exit(1)
 	}
 
-	sourceDataVolumesArray := allCompressedVolumes[indexToKeyMap[pickedNum-1]]
+	sourceDataVolumesArray := allCompressedVolumes[timeStrArray[pickedNum-1]]
 	fmt.Println(sourceDataVolumesArray)
 
 	targetState := targetCon.State.Running
@@ -134,6 +139,14 @@ func CmdLoad(c *cli.Context) {
 	}
 
 	// Start to duplicate the specific volumes from source to target.
+	err = utils.LoadVolumesForTargetContainer(sourceCon, sourceDataVolumesArray, targetDataVolumes)
+	if err != nil {
+		fmt.Println("Failed to load compressed data volumes for target containers.")
+		os.Exit(1)
+	} else {
+		fmt.Println("Loading compressed data volumes finished successfully.")
+		fmt.Println("Start source container and target container.")
+	}
 
 	err = StartContainer(sourceCon.ID)
 	if err != nil {
